@@ -12,12 +12,12 @@ const filename = (Deno.args[0] || "").replaceAll("\\", "/");
 let outFiletype = Deno.args[1] || "";
 
 if (!filename) {
-	console.log("No filename provided");
+	console.log(`No filename provided. Syntax: ${Deno.mainModule} <path to image> <output format, eg. png, jpg, etc.>`);
 	Deno.exit(1);
 }
 
 if (!outFiletype) {
-	console.log("No output filetype provided");
+	console.log(`No output filetype provided. Syntax: ${Deno.mainModule}<path to image> <output format, eg. png, jpg, etc.>`);
 	Deno.exit(1);
 }
 

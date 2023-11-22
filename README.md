@@ -1,4 +1,4 @@
-# UniConvert by [Fabik](https://github.com/LegendFabix) and DNA
+# UniConvert by DNA and [Fabik](https://github.com/LegendFabix)
 Hello,
 this is a small project Fabik and I made just for fun, which allows you to easily convert images right in your terminal. Written in TypeScript with [Deno](https://deno.land/)
 
