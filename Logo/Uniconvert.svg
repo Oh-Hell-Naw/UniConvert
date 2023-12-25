@@ -1,0 +1,24 @@
+<svg id="b2ccecf2-d3dd-4d35-973a-7400d2f9f3c1" data-name="Uniconvert" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="256" height="256" viewBox="0 0 256 256">
+<!-- Made by Fabix with the help of DNAScanner -->
+  <defs>
+    <radialGradient id="b4188099-1b97-40aa-9275-b8baa50b0866" data-name="Unbenannter Verlauf 18" cx="119.54702" cy="116.29233" r="3.61727" gradientTransform="translate(-1724 -1794) scale(16 16)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="0.37264" stop-color="#fdfdfd"/>
+      <stop offset="0.50689" stop-color="#f6f6f6"/>
+      <stop offset="0.60258" stop-color="#ebebeb"/>
+      <stop offset="0.67999" stop-color="#dadada"/>
+      <stop offset="0.74626" stop-color="#c4c4c4"/>
+      <stop offset="0.80498" stop-color="#a8a8a8"/>
+      <stop offset="0.8581" stop-color="#888"/>
+      <stop offset="0.90691" stop-color="#626262"/>
+      <stop offset="0.95232" stop-color="#373737"/>
+      <stop offset="0.99262" stop-color="#090909"/>
+      <stop offset="1"/>
+    </radialGradient>
+  </defs>
+  <g id="a190918d-197a-4ac5-85cf-18c203171b5f" data-name="Background">
+    <rect width="256" height="256" rx="24.46063" style="fill: #191919"/>
+  </g>
+  <text transform="translate(60.39844 188.84375) scale(1.13593 1)" style="font-size: 170.26962280273438px;fill: #fff;font-family: JUSTSans-Rg, JUST Sans">U</text>
+  <path id="eb231b7c-c6ee-4aea-aa9a-4235f745ef0c" data-name="Load" d="M189,125l-7.32128-7.32129,9.98164-9.98164-2.73311.17065a32.70726,32.70726,0,0,1-16.23337-2.985,45.99159,45.99159,0,0,1-12.796-8.98483,41.04229,41.04229,0,0,1-12.04007-24.10878A40.09839,40.09839,0,0,1,153.123,45.56673l7.68735,7.68735a30.4623,30.4623,0,0,0-2.42691,18.62527,30.81875,30.81875,0,0,0,8.77384,16.75915,29.92649,29.92649,0,0,0,21.54362,8.83972l1.82259.00774-8.96858-8.96858,7.25937-7.25937,21.96387,21.96386Zm35.38171-37.212-7.68735-7.68735a30.46246,30.46246,0,0,0,2.42692-18.62527,30.81885,30.81885,0,0,0-8.77384-16.75915,29.92654,29.92654,0,0,0-21.54363-8.83972l-1.82258-.00774,8.96858,8.96858-7.25938,7.25937L166.72657,30.13282,188.50469,8.3547,195.826,15.676l-9.98164,9.98164,2.7331-.17065a40.243,40.243,0,0,1,16.23453,3.2584,41.71173,41.71173,0,0,1,12.79484,8.71145A41.04236,41.04236,0,0,1,229.64689,61.5656,40.09847,40.09847,0,0,1,224.38171,87.788Z" style="fill: red;stroke-miterlimit: 10;stroke-width: 0.75px;stroke: url(#b4188099-1b97-40aa-9275-b8baa50b0866)"/>
+</svg>
