@@ -3,32 +3,32 @@ import { ffmpeg } from "https://deno.land/x/deno_ffmpeg@v3.1.0/mod.ts";
 import * as path from "https://deno.land/std@0.197.0/path/mod.ts";
 
 const filetypes: Record<string, string[]> = {
-  image: ["jpg", "png", "webp", "avif", "ico"],
+  image: ["jpg", "png", "webp", "avif"],
   audio: ["mp3", "wav", "flac", "m4a", "wma", "aac", "aiff", "ogg"],
-  video: ["mp4", "mov", "gif", "mkv", "avi", "wmv", "webm", "avchd", "3gp"],
+  video: ["mp4", "mov", "gif", "mkv", "avi", "wmv", "webm"],
 };
 
 const filename = (Deno.args[0] || "").replaceAll("\\", "/");
 let outFiletype = Deno.args[1] || "";
 
 if (!filename) {
-  console.log("No filename provided. Syntax is as following: uniconvert <input filepath> <output filetype>");
+  console.log('No filename provided. Type "unicovert --help" for more information');
   Deno.exit(1);
 }
 
 if (filename === "--help" || filename === "--h") {
-	console.log("Usage:\n uniconvert <input filepath> <output filetype> -> converts file to given output format\n uniconvert --filetypes -> shows supported filetypes")
-	Deno.exit(0)
+  console.log("Usage:\n uniconvert <input filepath> <output filetype> -> converts file to given output format\n uniconvert --filetypes -> shows supported filetypes");
+  Deno.exit(0);
 }
 
 if (filename === "--filetypes") {
-  console.log("Filetypes:")
-  for (const filetypeGroup in filetypes) console.log("", filetypeGroup + ":", filetypes[filetypeGroup].join(", "))
-  Deno.exit(0)
+  console.log("Filetypes:");
+  for (const filetypeGroup in filetypes) console.log("", filetypeGroup + ":", filetypes[filetypeGroup].join(", "));
+  Deno.exit(0);
 }
 
 if (!outFiletype) {
-  console.log("No output filetype provided");
+  console.log('No output filetype provided. Type "uniconvert --filetypes" for a list of supported filetypes');
   Deno.exit(1);
 }
 
@@ -44,7 +44,7 @@ for (const filetypeGroup in filetypes)
   }
 
 if (!outFiletypeFound) {
-  console.error(`Output filetype not supported (.${outFiletype})`);
+  console.error(`Output filetype not supported (.${outFiletype})\nType "unicovert --filetypes" for a list of supported filetypes`);
   Deno.exit(1);
 }
 
@@ -65,7 +65,7 @@ for (const filetypeGroup in filetypes)
   }
 
 if (!filetype) {
-  console.error(`Filetype not supported (.${filename.split(".").pop()})`);
+  console.error(`Filetype not supported (.${filename.split(".").pop()})\nType "unicovert --filetypes" for a list of supported filetypes`);
   Deno.exit(1);
 }
 
@@ -90,7 +90,7 @@ switch (filetype) {
   case "audio": {
     try {
       const ffmpegProcess = ffmpeg({ input: filename, ffmpegDir: "ffmpeg.exe" });
-      ffmpegProcess.save(path.join(path.dirname(filename), `${path.basename(filename, path.extname(filename))}.${outFiletype}`));
+      await ffmpegProcess.save(path.join(path.dirname(filename), `${path.basename(filename, path.extname(filename))}.${outFiletype}`));
     } catch {
       console.error("FFmpeg not found, please install ffmpeg.exe to PATH");
       Deno.exit(1);
@@ -101,7 +101,7 @@ switch (filetype) {
   case "video": {
     try {
       const ffmpegProcess = ffmpeg({ input: filename, ffmpegDir: "ffmpeg.exe" });
-      ffmpegProcess.save(path.join(path.dirname(filename), `${path.basename(filename, path.extname(filename))}.${outFiletype}`));
+      await ffmpegProcess.save(path.join(path.dirname(filename), `${path.basename(filename, path.extname(filename))}.${outFiletype}`));
     } catch {
       console.error("FFmpeg not found, please install ffmpeg to PATH");
       Deno.exit(1);
@@ -109,3 +109,5 @@ switch (filetype) {
     break;
   }
 }
+
+console.log("Done!");
