@@ -42,7 +42,7 @@ if (filename === "--filetypes") {
 	Deno.exit(0);
 }
 
-if (filename === "--upgrade") {
+if (filename === "--upgrade" || filename === "-u") {
 	if (Deno.execPath().replaceAll("\\", "/").split("/").at(-1)?.toLowerCase() === "deno.exe") {
 		console.error("Only available for compiled version");
 		Deno.exit(1);
