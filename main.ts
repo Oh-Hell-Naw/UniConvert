@@ -26,8 +26,8 @@ if (!filename) {
 
 if (filename === "--help" || filename === "-h") {
 	console.log("Usage:");
-	console.log(` ${crayon.yellow(`${executableName} <input filepath> <output filetype>`)}  converts file to given output format\n`);
-	console.log(` ${crayon.yellow(`${executableName} --filetypes`)}                         shows supported filetypes\n`);
+	console.log(` ${crayon.yellow(`${executableName} <input filepath> <output filetype>`)}  converts file to given output format`);
+	console.log(` ${crayon.yellow(`${executableName} --filetypes`)}                         shows supported filetypes`);
 	console.log(` ${crayon.yellow(`${executableName} --upgrade`)}                           Checks and upgrades to latest UniConvert build`);
 
 	Deno.exit(0);
