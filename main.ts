@@ -54,8 +54,6 @@ if (filename === "--upgrade") {
 	const currentHash = hash.toString().toUpperCase();
 	Deno.close(file.rid);
 
-	console.log({currentHash, remoteFileHash});
-
 	if (currentHash === remoteFileHash) {
 		console.log(crayon.green("You already have the latest version of UniConvert"));
 		Deno.exit(0);
