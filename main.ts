@@ -133,4 +133,4 @@ switch (filetype) {
 	}
 }
 
-console.log(`${crayon.green("Done!")}`);
+console.log(crayon.green("Done!"));
