@@ -48,6 +48,6 @@
     "https://deno.land/x/deno_ffmpeg@v3.1.0/src/ffmpegClass.ts": "512c71fdf31b72987acc57813832192683bef42469a6c3eb177fc4b7246dcf49",
     "https://deno.land/x/deno_ffmpeg@v3.1.0/src/formatter.ts": "33d46962aeafd0c7c688aae10fca82465f4d1e631a2c2ef1777ae6eddbaa40a8",
     "https://deno.land/x/deno_ffmpeg@v3.1.0/src/types.ts": "1229c2fde655799da2d8ca648ab5c82057245da47e91a84aa306db25d44c7534",
-    "https://dnascanner.de/functions/deno/fetchprogress.ts": "5011736a48c89dd1e3c5e3b354ce09dc017924d72fb96c8027cd250911c9f2eb"
+    "https://dnascanner.de/functions/deno/fetchprogress.ts": "015d9e75fdb100736b608a91267f5e7681f899fb23b82934654ab1be9152df0b"
   }
 }

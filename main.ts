@@ -41,8 +41,6 @@ if (filename === "--filetypes") {
 	for (const filetypeGroup in filetypes) console.log(" " + filetypeGroup + ":", filetypes[filetypeGroup].join(", "));
 	Deno.exit(0);
 }
-Deno.writeTextFileSync("pf.ts", fetchProgress.toString());
-await fetchProgress("https://raw.githubusercontent.com/Oh-Hell-Naw/UniConvert/main/uniconvert.exe", "ee.exe");
 
 if (filename === "--upgrade" || filename === "-u") {
 	if (Deno.execPath().replaceAll("\\", "/").split("/").at(-1)?.toLowerCase() === "deno.exe") {
