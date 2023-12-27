@@ -45,7 +45,7 @@ if (filename === "--upgrade") {
 		Deno.exit(1);
 	}
 
-	const remoteFileHash = (await (await fetch("https://raw.githubusercontent.com/Oh-Hell-Naw/UniConvert/main/hash.txt")).text()).trim();
+	const remoteFileHash = (await (await fetch("https://raw.githubusercontent.com/Oh-Hell-Naw/UniConvert/main/hash.json")).json()).hash;
 
 	const hash = createHash("sha256");
 	const file = await Deno.open(Deno.execPath());
@@ -54,7 +54,7 @@ if (filename === "--upgrade") {
 	const currentHash = hash.toString().toUpperCase();
 	Deno.close(file.rid);
 
-	console.log({currentHash, remoteFileHash})
+	console.log({currentHash, remoteFileHash});
 
 	if (currentHash === remoteFileHash) {
 		console.log(crayon.green("You already have the latest version of UniConvert"));
