@@ -68,7 +68,7 @@ if (filename === "--upgrade" || filename === "-u") {
 }
 
 if (!outFiletype) {
-	console.error(`No output filetype provided. Type "uniconvert --filetypes" for a list of supported filetypes`);
+	console.error(`No output filetype provided. Type "${executableName} --filetypes" for a list of supported filetypes`);
 	Deno.exit(1);
 }
 
