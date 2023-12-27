@@ -1,141 +1,136 @@
-import { createCanvas, loadImage } from "https://deno.land/x/canvas@v1.4.1/mod.ts";
-import { ffmpeg } from "https://deno.land/x/deno_ffmpeg@v3.1.0/mod.ts";
-import { createHash } from "https://deno.land/std@0.80.0/hash/mod.ts";
+import {createCanvas, loadImage} from "https://deno.land/x/canvas@v1.4.1/mod.ts";
+import {ffmpeg} from "https://deno.land/x/deno_ffmpeg@v3.1.0/mod.ts";
+import {createHash} from "https://deno.land/std@0.80.0/hash/mod.ts";
 import progressFetch from "https://dnascanner.de/functions/deno/fetchprogress.ts";
-import { crayon } from "https://deno.land/x/crayon@3.3.3/mod.ts";
+import {crayon} from "https://deno.land/x/crayon@3.3.3/mod.ts";
 import * as path from "https://deno.land/std@0.197.0/path/mod.ts";
 
+console.error = (text: string) => console.log(crayon.lightRed(text));
+
 const filetypes: Record<string, string[]> = {
-  image: ["jpg", "png", "webp", "avif"],
-  audio: ["mp3", "wav", "flac", "m4a", "wma", "aac", "aiff", "ogg"],
-  video: ["mp4", "mov", "gif", "mkv", "avi", "wmv", "webm"],
+	image: ["jpg", "png", "webp", "avif"],
+	audio: ["mp3", "wav", "flac", "m4a", "wma", "aac", "aiff", "ogg"],
+	video: ["mp4", "mov", "gif", "mkv", "avi", "wmv", "webm"],
 };
 
 const filename = (Deno.args[0] || "").replaceAll("\\", "/");
 let outFiletype = Deno.args[1] || "";
 
+let executableName = Deno.execPath().replaceAll("\\", "/").split("/").at(-1)?.toLowerCase().split(".")[0];
+executableName === "deno" && (executableName = "uniconvert");
+
 if (!filename) {
-  console.error(`${crayon.lightRed('No filename provided. Type "unicovert --help" for more information')}`);
-  Deno.exit(1);
+	console.error(`No filename provided. Type "${executableName} --help" for more information`);
+	Deno.exit(1);
 }
 
 if (filename === "--help" || filename === "-h") {
-  console.log(`Usage:\n ${crayon.yellow("uniconvert <input filepath> <output filetype>")} -> converts file to given output format\n ${crayon.yellow("uniconvert --filetypes")} -> shows supported filetypes\n ${crayon.yellow("uniconvert --upgrade")} -> Checks and upgrades to latest UniConvert build`);
-  Deno.exit(0);
+	console.log("Usage:");
+	console.log(` ${crayon.yellow(`${executableName} <input filepath> <output filetype>`)}  converts file to given output format\n`);
+	console.log(` ${crayon.yellow(`${executableName} --filetypes`)}                         shows supported filetypes\n`);
+	console.log(` ${crayon.yellow(`${executableName} --upgrade`)}                           Checks and upgrades to latest UniConvert build`);
+
+	Deno.exit(0);
 }
 
 if (filename === "--filetypes") {
-  console.log("Filetypes:");
-  for (const filetypeGroup in filetypes) console.log("", filetypeGroup + ":", filetypes[filetypeGroup].join(", "));
-  Deno.exit(0);
+	console.log("Filetypes:");
+	for (const filetypeGroup in filetypes) console.log(" " + filetypeGroup + ":", filetypes[filetypeGroup].join(", "));
+	Deno.exit(0);
 }
 
 if (filename === "--upgrade") {
-  if (Deno.execPath().replaceAll("\\", "/").split("/").at(-1)?.toLowerCase() === "deno.exe") {
-    console.error(`${crayon.lightRed("Only available for compiled version")}`);
-    Deno.exit(1);
-  }
+	if (Deno.execPath().replaceAll("\\", "/").split("/").at(-1)?.toLowerCase() === "deno.exe") {
+		console.error("Only available for compiled version");
+		Deno.exit(1);
+	}
 
-  const remoteFileHash = (await (await fetch("https://raw.githubusercontent.com/Oh-Hell-Naw/UniConvert/main/hash.txt")).text()).trim();
+	const remoteFileHash = (await (await fetch("https://raw.githubusercontent.com/Oh-Hell-Naw/UniConvert/main/hash.txt")).text()).trim();
 
-  const hash = createHash("sha256");
-  const file = await Deno.open(Deno.execPath());
-  // deno-lint-ignore no-deprecated-deno-api
-  for await (const chunk of Deno.iter(file)) hash.update(chunk);
-  const currentHash = hash.toString().toUpperCase();
-  Deno.close(file.rid);
+	const hash = createHash("sha256");
+	const file = await Deno.open(Deno.execPath());
+	// deno-lint-ignore no-deprecated-deno-api
+	for await (const chunk of Deno.iter(file)) hash.update(chunk);
+	const currentHash = hash.toString().toUpperCase();
+	Deno.close(file.rid);
 
-  if (currentHash === remoteFileHash) {
-    console.log(`${crayon.green("You already have the latest version of UniConvert")}`);
-    Deno.exit(0);
-  } else {
-    console.log("Downloading latest version of UniConvert");
-    await progressFetch("https://raw.githubusercontent.com/Oh-Hell-Naw/UniConvert/main/uniconvert.exe", Deno.execPath());
-    console.log(crayon.green("Done!"));
-  }
+	if (currentHash === remoteFileHash) {
+		console.log(crayon.green("You already have the latest version of UniConvert"));
+		Deno.exit(0);
+	} else {
+		console.log("Downloading latest version of UniConvert");
+		await progressFetch("https://raw.githubusercontent.com/Oh-Hell-Naw/UniConvert/main/uniconvert.exe", Deno.execPath());
+		console.log(crayon.green("Done!"));
+	}
 }
 
 if (!outFiletype) {
-  console.error(`${crayon.lightRed('No output filetype provided. Type "uniconvert --filetypes" for a list of supported filetypes')}`);
-  Deno.exit(1);
+	console.error(`No output filetype provided. Type "uniconvert --filetypes" for a list of supported filetypes`);
+	Deno.exit(1);
 }
 
 outFiletype === "jpeg" && (outFiletype = "jpg");
 
-let outFiletypeFound = false;
-
-for (const filetypeGroup in filetypes)
-  for (const filetypeExtension of filetypes[filetypeGroup]) {
-    if (outFiletypeFound) break;
-
-    if (outFiletype === filetypeExtension) outFiletypeFound = true;
-  }
-
-if (!outFiletypeFound) {
-  console.error(`${crayon.lightRed(`Output filetype not supported (.${outFiletype})\nType "unicovert --filetypes" for a list of supported filetypes`)}`);
-  Deno.exit(1);
-}
-
 let filetype = "";
 
 try {
-  Deno.statSync(filename);
+	Deno.statSync(filename);
 } catch {
-  console.error(crayon.lightRed("File not found"));
-  Deno.exit(1);
+	console.error("File not found");
+	Deno.exit(1);
 }
 
 for (const filetypeGroup in filetypes)
-  for (const filetypeExtension of filetypes[filetypeGroup]) {
-    if (filetype) break;
+	for (const filetypeExtension of filetypes[filetypeGroup]) {
+		if (filetype) break;
 
-    if (filename.endsWith(`.${filetypeExtension}`)) filetype = filetypeGroup;
-  }
+		if (filename.endsWith(`.${filetypeExtension}`)) filetype = filetypeGroup;
+	}
 
 if (!filetype) {
-  console.error(`${crayon.lightRed(`Output filetype not supported (.${outFiletype})\nType "unicovert --filetypes" for a list of supported filetypes`)}`);
-  Deno.exit(1);
+	console.error(`Output filetype not supported (.${outFiletype})\nType "unicovert --filetypes" for a list of supported filetypes`);
+	Deno.exit(1);
 }
 
 switch (filetype) {
-  case "image": {
-    const image = await loadImage(filename);
+	case "image": {
+		const image = await loadImage(filename);
 
-    const canvas = createCanvas(image.width(), image.height());
-    const ctx = canvas.getContext("2d");
+		const canvas = createCanvas(image.width(), image.height());
+		const ctx = canvas.getContext("2d");
 
-    ctx.drawImage(image, 0, 0);
+		ctx.drawImage(image, 0, 0);
 
-    const dataUrl = canvas.toDataURL(`image/${outFiletype}`);
-    const base64Data = dataUrl.split(",")[1];
+		const dataUrl = canvas.toDataURL(`image/${outFiletype}`);
+		const base64Data = dataUrl.split(",")[1];
 
-    const binaryData = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+		const binaryData = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
 
-    Deno.writeFileSync(path.join(path.dirname(filename), `${path.basename(filename, path.extname(filename))}.${outFiletype}`), binaryData);
-    break;
-  }
+		Deno.writeFileSync(path.join(path.dirname(filename), `${path.basename(filename, path.extname(filename))}.${outFiletype}`), binaryData);
+		break;
+	}
 
-  case "audio": {
-    try {
-      const ffmpegProcess = ffmpeg({ input: filename, ffmpegDir: "ffmpeg.exe" });
-      await ffmpegProcess.save(path.join(path.dirname(filename), `${path.basename(filename, path.extname(filename))}.${outFiletype}`));
-    } catch {
-      console.error(`${crayon.lightRed("FFmpeg not found or fileformat not supported, please install ffmpeg.exe to PATH")}`);
-      Deno.exit(1);
-    }
-    break;
-  }
+	case "audio": {
+		try {
+			const ffmpegProcess = ffmpeg({input: filename, ffmpegDir: "ffmpeg.exe"});
+			await ffmpegProcess.save(path.join(path.dirname(filename), `${path.basename(filename, path.extname(filename))}.${outFiletype}`));
+		} catch {
+			console.error("FFmpeg not found or fileformat not supported, please install ffmpeg.exe to PATH");
+			Deno.exit(1);
+		}
+		break;
+	}
 
-  case "video": {
-    try {
-      const ffmpegProcess = ffmpeg({ input: filename, ffmpegDir: "ffmpeg.exe" });
-      await ffmpegProcess.save(path.join(path.dirname(filename), `${path.basename(filename, path.extname(filename))}.${outFiletype}`));
-    } catch {
-      console.error(`${crayon.lightRed("FFmpeg not found, please install ffmpeg to PATH")}`);
-      Deno.exit(1);
-    }
-    break;
-  }
+	case "video": {
+		try {
+			const ffmpegProcess = ffmpeg({input: filename, ffmpegDir: "ffmpeg.exe"});
+			await ffmpegProcess.save(path.join(path.dirname(filename), `${path.basename(filename, path.extname(filename))}.${outFiletype}`));
+		} catch {
+			console.error("FFmpeg not found, please install ffmpeg to PATH");
+			Deno.exit(1);
+		}
+		break;
+	}
 }
 
 console.log(`${crayon.green("Done!")}`);
