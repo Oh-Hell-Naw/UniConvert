@@ -16,7 +16,7 @@ const filetypes: Record<string, string[]> = {
 const filename = (Deno.args[0] || "").replaceAll("\\", "/");
 let outFiletype = Deno.args[1] || "";
 
-let executableName = Deno.execPath().replaceAll("\\", "/").split("/").at(-1)?.toLowerCase().split(".")[0];
+let executableName: string = Deno.execPath().replaceAll("\\", "/").split("/").at(-1)?.toLowerCase().split(".")[0] || "";
 executableName === "deno" && (executableName = "uniconvert");
 
 if (!filename) {
@@ -26,9 +26,12 @@ if (!filename) {
 
 if (filename === "--help" || filename === "-h") {
 	console.log("Usage:");
-	console.log(` ${crayon.yellow(`${executableName} <input filepath> <output filetype>`)}  converts file to given output format`);
-	console.log(` ${crayon.yellow(`${executableName} --filetypes`)}                         shows supported filetypes`);
-	console.log(` ${crayon.yellow(`${executableName} --upgrade`)}                           Checks and upgrades to latest UniConvert build`);
+	console.log(` ${executableName} <input file> <output filetype>       \x1b[${executableName.length + 40}G Converts file to given output format`);
+	console.log(` ${executableName} --help                               \x1b[${executableName.length + 40}G Shows this help message`);
+	console.log(` ${" ".repeat(executableName.length)+ " -h"}            \x1b[${executableName.length + 40}G ^--`);
+	console.log(` ${executableName} --filetypes                          \x1b[${executableName.length + 40}G Shows supported filetypes`);
+	console.log(` ${executableName} --upgrade                            \x1b[${executableName.length + 40}G Checks and upgrades to latest UniConvert build`);
+	console.log(` ${" ".repeat(executableName.length)+ " -u"}            \x1b[${executableName.length + 40}G ^--`);
 
 	Deno.exit(0);
 }
@@ -88,7 +91,7 @@ for (const filetypeGroup in filetypes)
 	}
 
 if (!filetype) {
-	console.error(`Output filetype not supported (.${outFiletype})\nType "unicovert --filetypes" for a list of supported filetypes`);
+	console.error(`Output filetype not supported (.${outFiletype})\nType "${executableName} --filetypes" for a list of supported filetypes`);
 	Deno.exit(1);
 }
 
