@@ -1,7 +1,7 @@
 import {createCanvas, loadImage} from "https://deno.land/x/canvas@v1.4.1/mod.ts";
 import {ffmpeg} from "https://deno.land/x/deno_ffmpeg@v3.1.0/mod.ts";
 import {createHash} from "https://deno.land/std@0.80.0/hash/mod.ts";
-import progressFetch from "https://dnascanner.de/functions/deno/fetchprogress.ts";
+import fetchProgress from "https://dnascanner.de/functions/deno/fetchprogress.ts";
 import {crayon} from "https://deno.land/x/crayon@3.3.3/mod.ts";
 import * as path from "https://deno.land/std@0.197.0/path/mod.ts";
 
@@ -28,10 +28,10 @@ if (filename === "--help" || filename === "-h") {
 	console.log("Usage:");
 	console.log(` ${executableName} <input file> <output filetype>       \x1b[${executableName.length + 40}G Converts file to given output format`);
 	console.log(` ${executableName} --help                               \x1b[${executableName.length + 40}G Shows this help message`);
-	console.log(` ${" ".repeat(executableName.length)+ " -h"}            \x1b[${executableName.length + 40}G ^--`);
+	console.log(` ${" ".repeat(executableName.length) + " -h"}            \x1b[${executableName.length + 40}G ^--`);
 	console.log(` ${executableName} --filetypes                          \x1b[${executableName.length + 40}G Shows supported filetypes`);
 	console.log(` ${executableName} --upgrade                            \x1b[${executableName.length + 40}G Checks and upgrades to latest UniConvert build`);
-	console.log(` ${" ".repeat(executableName.length)+ " -u"}            \x1b[${executableName.length + 40}G ^--`);
+	console.log(` ${" ".repeat(executableName.length) + " -u"}            \x1b[${executableName.length + 40}G ^--`);
 
 	Deno.exit(0);
 }
@@ -41,6 +41,8 @@ if (filename === "--filetypes") {
 	for (const filetypeGroup in filetypes) console.log(" " + filetypeGroup + ":", filetypes[filetypeGroup].join(", "));
 	Deno.exit(0);
 }
+Deno.writeTextFileSync("pf.ts", fetchProgress.toString());
+await fetchProgress("https://raw.githubusercontent.com/Oh-Hell-Naw/UniConvert/main/uniconvert.exe", "ee.exe");
 
 if (filename === "--upgrade" || filename === "-u") {
 	if (Deno.execPath().replaceAll("\\", "/").split("/").at(-1)?.toLowerCase() === "deno.exe") {
@@ -62,7 +64,7 @@ if (filename === "--upgrade" || filename === "-u") {
 		Deno.exit(0);
 	} else {
 		console.log("Downloading latest version of UniConvert");
-		await progressFetch("https://raw.githubusercontent.com/Oh-Hell-Naw/UniConvert/main/uniconvert.exe", Deno.execPath());
+		await fetchProgress("https://raw.githubusercontent.com/Oh-Hell-Naw/UniConvert/main/uniconvert.exe", Deno.execPath());
 		console.log(crayon.green("Done!"));
 	}
 }

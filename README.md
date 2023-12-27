@@ -23,5 +23,5 @@ uniconvert.exe --filetypes
 ```
 
 ## How to install
-- Install [FFmpeg](https://github.com/BtbN/FFmpeg-Builds/releases) (to PATH).
+- Install [FFmpeg](https://github.com/BtbN/FFmpeg-Builds/releases) to PATH.
 - Install [Uniconvert](https://github.com/DNAScanner/UniConvert) (to PATH).
