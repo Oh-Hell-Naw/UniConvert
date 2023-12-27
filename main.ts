@@ -26,11 +26,11 @@ if (!filename) {
 
 if (filename === "--help" || filename === "-h") {
 	console.log("Usage:");
-	console.log(` ${executableName} <input file> <output filetype>       \x1b[${executableName.length + 40}G Converts file to given output format`);
-	console.log(` ${executableName} --help                               \x1b[${executableName.length + 40}G Shows this help message`);
+	console.log(` ${executableName} <input file> <output filetype>        \x1b[${executableName.length + 40}G Converts file to given output format`);
+	console.log(` ${executableName} --help                                \x1b[${executableName.length + 40}G Shows this help message`);
 	console.log(` ${" ".repeat(executableName.length) + " -h"}            \x1b[${executableName.length + 40}G ^--`);
-	console.log(` ${executableName} --filetypes                          \x1b[${executableName.length + 40}G Shows supported filetypes`);
-	console.log(` ${executableName} --upgrade                            \x1b[${executableName.length + 40}G Checks and upgrades to latest UniConvert build`);
+	console.log(` ${executableName} --filetypes                           \x1b[${executableName.length + 40}G Shows supported filetypes`);
+	console.log(` ${executableName} --upgrade                             \x1b[${executableName.length + 40}G Checks and upgrades to latest UniConvert build`);
 	console.log(` ${" ".repeat(executableName.length) + " -u"}            \x1b[${executableName.length + 40}G ^--`);
 
 	Deno.exit(0);
