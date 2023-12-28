@@ -38,7 +38,7 @@ uniconvert.exe --upgrade
 
 ## Compiling
 
-To compile main.ts install wincompile:
+To compile main.ts install [wincompile](https://github.com/Leokuma/wincompile):
 
 ```bash
 deno install -f --allow-env=DENO_DIR,LOCALAPPDATA --allow-net=raw.githubusercontent.com/Leokuma/wincompile --allow-read --allow-write --allow-run https://deno.land/x/wincompile/wincompile.ts
