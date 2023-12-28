@@ -62,8 +62,10 @@ if (filename === "--upgrade" || filename === "-u") {
 		Deno.exit(0);
 	} else {
 		console.log("Downloading latest version of UniConvert");
-		await fetchProgress("https://raw.githubusercontent.com/Oh-Hell-Naw/UniConvert/main/uniconvert.exe", Deno.execPath());
-		console.log(crayon.green("Done!"));
+		await fetchProgress("https://raw.githubusercontent.com/Oh-Hell-Naw/UniConvert/main/uniconvert.exe", "uniconvert.update", 100);
+		console.log(crayon.green("Starting update..."));
+
+
 	}
 }
 

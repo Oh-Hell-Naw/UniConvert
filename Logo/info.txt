@@ -1,3 +1,0 @@
-The Elements in the folder are intended for the use as icons for uniconvert.exe
-Sadly, deno doesn't allow the change of .exe icons
-Soo we have to wait...

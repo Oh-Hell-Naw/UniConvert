@@ -1,13 +1,16 @@
 # UniConvert by [Fabik](https://github.com/LegendFabix) and [DNA](https://github.com/DNAScanner)
+
 G'day,
 this is a small project Fabik and I made just for fun, which allows you to easily convert images, audio files and videos right in your terminal. Written in TypeScript with [Deno](https://deno.land/)
 
 ## How to use
+
 General usage:
 
 ```bash
 uniconvert.exe <path to image> <output format, e.g. png, jpg, mp4, etc.>
 ```
+
 -> converts file to given output format.
 
 Show help:
@@ -22,6 +25,21 @@ Show supported filetypes:
 uniconvert.exe --filetypes
 ```
 
+Check for updates:
+
+```bash
+uniconvert.exe --upgrade
+```
+
 ## How to install
+
 - Install [FFmpeg](https://github.com/BtbN/FFmpeg-Builds/releases) to PATH.
 - Install [Uniconvert](https://github.com/DNAScanner/UniConvert) (to PATH).
+
+## Compiling
+
+To compile main.ts run:
+
+```bash
+deno run -A test.ts
+```
