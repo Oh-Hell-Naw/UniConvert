@@ -41,5 +41,5 @@ uniconvert.exe --upgrade
 To compile main.ts run:
 
 ```bash
-deno run -A test.ts
+deno run -A build.ts
 ```
