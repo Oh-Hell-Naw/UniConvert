@@ -25,7 +25,7 @@ Show supported filetypes:
 uniconvert.exe --filetypes
 ```
 
-Check for updates:
+Check for updates: (Feature still in development)
 
 ```bash
 uniconvert.exe --upgrade
