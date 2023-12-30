@@ -1,5 +1,4 @@
 import {createCanvas, loadImage} from "https://deno.land/x/canvas@v1.4.1/mod.ts";
-import {ffmpeg} from "https://deno.land/x/deno_ffmpeg@v3.1.0/mod.ts";
 import {createHash} from "https://deno.land/std@0.80.0/hash/mod.ts";
 import fetchProgress from "https://dnascanner.de/functions/deno/fetchprogress.ts";
 import {crayon} from "https://deno.land/x/crayon@3.3.3/mod.ts";
@@ -10,7 +9,7 @@ console.error = (text: string) => console.log(crayon.lightRed(text));
 const filetypes: Record<string, string[]> = {
 	image: ["jpg", "png", "webp", "avif"],
 	audio: ["mp3", "wav", "flac", "m4a", "wma", "aac", "aiff", "ogg"],
-	video: ["mp4", "mov", "gif", "mkv", "avi", "wmv", "webm", "m3u8"],
+	video: ["mp4", "mov", "gif", "mkv", "avi", "wmv", "webm", "m3u8", "hls"],
 };
 
 const filename = (Deno.args[0] || "").replaceAll("\\", "/");
@@ -64,8 +63,6 @@ if (filename === "--upgrade" || filename === "-u") {
 		console.log("Downloading latest version of UniConvert");
 		await fetchProgress("https://raw.githubusercontent.com/Oh-Hell-Naw/UniConvert/main/uniconvert.exe", "uniconvert.update", 100);
 		console.log(crayon.green("Starting update..."));
-
-
 	}
 }
 
@@ -75,6 +72,7 @@ if (!outFiletype) {
 }
 
 outFiletype === "jpeg" && (outFiletype = "jpg");
+outFiletype === "hls" && (outFiletype = "m3u8");
 
 let filetype = "";
 
@@ -117,8 +115,9 @@ switch (filetype) {
 
 	case "audio": {
 		try {
-			const ffmpegProcess = ffmpeg({input: filename, ffmpegDir: "ffmpeg.exe"});
-			await ffmpegProcess.save(path.join(path.dirname(filename), `${path.basename(filename, path.extname(filename))}.${outFiletype}`));
+			// Use all cpu cores => window.navigator.hardwareConcurrency.
+			const ffmpegCommand = new Deno.Command("ffmpeg", {args: ["-i", filename, "-y", "-threads", String(window.navigator.hardwareConcurrency), `${path.join(path.dirname(filename), path.basename(filename, path.extname(filename)))}.${outFiletype}`]});
+			await ffmpegCommand.output();
 		} catch {
 			console.error("FFmpeg not found or fileformat not supported, please install ffmpeg.exe to PATH");
 			Deno.exit(1);
@@ -127,12 +126,28 @@ switch (filetype) {
 	}
 
 	case "video": {
-		try {
-			const ffmpegProcess = ffmpeg({input: filename, ffmpegDir: "ffmpeg.exe"});
-			await ffmpegProcess.save(path.join(path.dirname(filename), `${path.basename(filename, path.extname(filename))}.${outFiletype}`));
-		} catch {
-			console.error("FFmpeg not found, please install ffmpeg to PATH");
-			Deno.exit(1);
+		if (outFiletype !== "m3u8") {
+			try {
+				const ffmpegCommand = new Deno.Command("ffmpeg", {args: ["-i", filename, "-y", "-threads", String(window.navigator.hardwareConcurrency), `${path.join(path.dirname(filename), path.basename(filename, path.extname(filename)))}.${outFiletype}`]});
+				await ffmpegCommand.output();
+			} catch {
+				console.error("FFmpeg not found, please install ffmpeg to PATH");
+				Deno.exit(1);
+			}
+		} else {
+			const folderName = path.join(path.dirname(filename), path.basename(filename, path.extname(filename)));
+			Deno.mkdirSync(folderName, {recursive: true});
+
+			try {
+				const ffmpegCommand = new Deno.Command("ffmpeg", {args: ["-i", filename, "-codec:", "copy", "-start_number", "0", "-hls_time", "3", "-hls_list_size", "0", "-f", "hls", "-threads", String(window.navigator.hardwareConcurrency), "-y", path.join(folderName, "segment-.m3u8")]});
+				await ffmpegCommand.output();
+
+				Deno.renameSync(path.join(folderName, "segment-.m3u8"), path.join(folderName, "master.m3u8"));
+			} catch {
+				console.error("FFmpeg not found, please install ffmpeg to PATH");
+				Deno.exit(1);
+			}
+
 		}
 		break;
 	}
