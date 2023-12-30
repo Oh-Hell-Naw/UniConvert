@@ -1,1 +1,0 @@
-Run "build.ts" if you want to compile main.ts.
