@@ -10,7 +10,7 @@ console.error = (text: string) => console.log(crayon.lightRed(text));
 const filetypes: Record<string, string[]> = {
 	image: ["jpg", "png", "webp", "avif"],
 	audio: ["mp3", "wav", "flac", "m4a", "wma", "aac", "aiff", "ogg"],
-	video: ["mp4", "mov", "gif", "mkv", "avi", "wmv", "webm"],
+	video: ["mp4", "mov", "gif", "mkv", "avi", "wmv", "webm", "m3u8"],
 };
 
 const filename = (Deno.args[0] || "").replaceAll("\\", "/");
