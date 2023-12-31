@@ -1,4 +1,3 @@
-import {createCanvas, loadImage} from "https://deno.land/x/canvas@v1.4.1/mod.ts";
 import {createHash} from "https://deno.land/std@0.80.0/hash/mod.ts";
 import fetchProgress from "https://dnascanner.de/functions/deno/fetchprogress.ts";
 import {crayon} from "https://deno.land/x/crayon@3.3.3/mod.ts";
@@ -97,19 +96,13 @@ if (!filetype) {
 
 switch (filetype) {
 	case "image": {
-		const image = await loadImage(filename);
-
-		const canvas = createCanvas(image.width(), image.height());
-		const ctx = canvas.getContext("2d");
-
-		ctx.drawImage(image, 0, 0);
-
-		const dataUrl = canvas.toDataURL(`image/${outFiletype}`);
-		const base64Data = dataUrl.split(",")[1];
-
-		const binaryData = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
-
-		Deno.writeFileSync(path.join(path.dirname(filename), `${path.basename(filename, path.extname(filename))}.${outFiletype}`), binaryData);
+		try {
+			const ffmpegCommand = new Deno.Command("ffmpeg", {args: ["-i", filename, "-y", "-threads", String(window.navigator.hardwareConcurrency), `${path.join(path.dirname(filename), path.basename(filename, path.extname(filename)))}.${outFiletype}`]});
+			await ffmpegCommand.output();
+		} catch {
+			console.error("FFmpeg not found or fileformat not supported, please install ffmpeg.exe to PATH");
+			Deno.exit(1);
+		}
 		break;
 	}
 
@@ -147,7 +140,6 @@ switch (filetype) {
 				console.error("FFmpeg not found, please install ffmpeg to PATH");
 				Deno.exit(1);
 			}
-
 		}
 		break;
 	}
