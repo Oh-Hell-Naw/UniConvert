@@ -5,31 +5,18 @@ this is a small project Fabik and I made just for fun, which allows you to easil
 
 ## How to use
 
-General usage:
+| Command                          | Alias | Description                                                   |
+| -------------------------------- | ----- | ------------------------------------------------------------- |
+| `uniconvert --help`              | `-h`  | Shows the help message                                        |
+| `uniconvert --filetypes`         | `-ft` | Shows a list of supported filetypes                           |
+| `uniconvert --upgrade`           | `-u`  | Upgrades UniConvert to the latest version                     |
+| `uniconvert test.mp4 hls`        |       | Converts `test.mp4` to `test.m3u8`                            |
+| `uniconvert ./folder/:image png` |       | Converts all images in `folder` to `png`                      |
+| `uniconvert ./folder/:mov mp4`   |       | Converts all `.mov` files in `folder` to `mp4`                |
+| `uniconvert ./test.mp3 ogg -k`   |       | Converts `test.mp3` to `test.ogg` and keeps the original file |
 
-```bash
-uniconvert.exe <path to image> <output format, e.g. png, jpg, mp4, etc.>
-```
-
--> converts file to given output format.
-
-Show help:
-
-```bash
-uniconvert.exe --help
-```
-
-Show supported filetypes:
-
-```bash
-uniconvert.exe --filetypes
-```
-
-Check for updates: (Feature still in development)
-
-```bash
-uniconvert.exe --upgrade
-```
+Arguments:
+- `--keep-original` or `-k`: Keeps the original file after conversion (@default: `false`)
 
 ## How to install
 
