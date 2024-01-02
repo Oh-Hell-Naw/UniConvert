@@ -10,7 +10,7 @@ let executableName: string = Deno.execPath().replaceAll("\\", "/").split("/").at
 executableName === "deno" && (executableName = "uniconvert");
 
 const filetypes: Record<string, string[]> = {
-	image: ["jpg", "png", "webp", "avif"],
+	image: ["jpg", "png", "webp", "avif", "thumbnail"],
 	audio: ["mp3", "wav", "flac", "m4a", "wma", "aac", "aiff", "ogg"],
 	video: ["mp4", "mov", "gif", "mkv", "avi", "wmv", "webm", "m3u8", "hls"],
 };
@@ -122,7 +122,7 @@ const request = await (async () => {
 			filetype: output,
 		},
 		extra: {
-			keepOriginal: Deno.args.includes("--keep-original") || Deno.args.includes("-k"),
+			keepOriginal: Deno.args.includes("--keep-original") || Deno.args.includes("-k") || true,
 		},
 	};
 
@@ -183,14 +183,14 @@ if (request.input.isFolder) {
 	for (const file of files) {
 		console.log(`\x1b[1F\x1b[1MCurrent file: ${crayon.yellow(processedFiles)}/${crayon.yellow(totalFiles)}`);
 
-		if (path.extname(file).replaceAll(".", "") === "m3u8" && request.output.filetype !== "m3u8") {
+		if (path.extname(file).replaceAll(".", "") === "m3u8" && request.output.filetype !== "m3u8" && request.output.filetype !== "thumbnail") {
 			// Convert m3u8 to mp4, for example
 			const ffmpegCommand = new Deno.Command("ffmpeg", {cwd: path.dirname(file), args: ["-i", path.basename(file), "-y", "-threads", String(window.navigator.hardwareConcurrency), path.join("..", path.basename(path.dirname(file))) + "." + request.output.filetype]});
 			await ffmpegCommand.output();
 
 			// Delete the folder, the inputfile was located in
 			if (!request.extra.keepOriginal) Deno.removeSync(path.dirname(file), {recursive: true});
-		} else if (request.input.filetype === "image" || request.input.filetype === "audio" || (request.input.filetype === "video" && request.output.filetype !== "m3u8")) {
+		} else if (request.input.filetype === "image" || request.input.filetype === "audio" || (request.input.filetype === "video" && request.output.filetype !== "m3u8" && request.output.filetype !== "thumbnail")) {
 			const ffmpegCommand = new Deno.Command("ffmpeg", {cwd: path.dirname(file), args: ["-i", path.basename(file), "-y", "-threads", String(window.navigator.hardwareConcurrency), `${path.basename(file, path.extname(file))}.${request.output.filetype}`]});
 			await ffmpegCommand.output();
 
@@ -205,6 +205,18 @@ if (request.input.isFolder) {
 			Deno.renameSync(path.join(folderName, "segment-.m3u8"), path.join(folderName, "master.m3u8"));
 
 			if (!request.extra.keepOriginal) Deno.removeSync(file);
+		} else if (request.input.filetype === "video" && path.extname(file).replaceAll(".", "") === "m3u8" && request.output.filetype === "thumbnail") {
+			if (Deno.statSync(path.join(path.dirname(file), "thumbnail.png")).isFile) {
+				processedFiles++;
+				continue;
+			}
+
+			const ffmpegCommand = new Deno.Command("ffmpeg", {cwd: path.dirname(file), args: ["-i", path.basename(file), "-y", "-threads", String(window.navigator.hardwareConcurrency), "-vframes", "1", "-vf", "thumbnail=256", "thumbnail.png"]});
+			await ffmpegCommand.output();
+		} else if (request.input.filetype === "video" && request.output.filetype === "thumbnail") {
+			// If the output filetype is thumbnail, save the thumbnail as <video-name>.png
+			const ffmpegCommand = new Deno.Command("ffmpeg", {cwd: path.dirname(file), args: ["-i", path.basename(file), "-y", "-threads", String(window.navigator.hardwareConcurrency), "-vframes", "1", "-vf", "thumbnail=256", `${path.basename(file, path.extname(file))}.png`]});
+			await ffmpegCommand.output();
 		}
 
 		processedFiles++;
@@ -216,7 +228,7 @@ if (request.input.isFolder) {
 		Deno.exit(0);
 	}
 
-	if (request.input.filetype === "image" || request.input.filetype === "audio" || (request.input.filetype === "video" && request.output.filetype !== "m3u8")) {
+	if (request.input.filetype === "image" || request.input.filetype === "audio" || (request.input.filetype === "video" && request.output.filetype !== "m3u8" && request.output.filetype !== "thumbnail")) {
 		const ffmpegCommand = new Deno.Command("ffmpeg", {cwd: path.dirname(request.input.path), args: ["-i", path.basename(request.input.path), "-y", "-threads", String(window.navigator.hardwareConcurrency), `${path.basename(request.input.path, path.extname(request.input.path))}.${request.output.filetype}`]});
 		await ffmpegCommand.output();
 
@@ -231,6 +243,13 @@ if (request.input.isFolder) {
 		Deno.renameSync(path.join(folderName, "segment-.m3u8"), path.join(folderName, "master.m3u8"));
 
 		if (!request.extra.keepOriginal) Deno.removeSync(request.input.path);
+	} else if (request.input.filetype === "video" && path.extname(request.input.path).replaceAll(".", "") === "m3u8" && request.output.filetype === "thumbnail") {
+		const ffmpegCommand = new Deno.Command("ffmpeg", {cwd: path.dirname(request.input.path), args: ["-i", path.basename(request.input.path), "-y", "-threads", String(window.navigator.hardwareConcurrency), "-vframes", "1", "-vf", "thumbnail=256", "thumbnail.png"]});
+		await ffmpegCommand.output();
+	} else if (request.input.filetype === "video" && request.output.filetype === "thumbnail") {
+		// If the output filetype is thumbnail, save the thumbnail as <video-name>.png
+		const ffmpegCommand = new Deno.Command("ffmpeg", {cwd: path.dirname(request.input.path), args: ["-i", path.basename(request.input.path), "-y", "-threads", String(window.navigator.hardwareConcurrency), "-vframes", "1", "-vf", "thumbnail=256", `${path.basename(request.input.path, path.extname(request.input.path))}.png`]});
+		await ffmpegCommand.output();
 	}
 }
 
