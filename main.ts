@@ -206,9 +206,12 @@ if (request.input.isFolder) {
 
 			if (!request.extra.keepOriginal) Deno.removeSync(file);
 		} else if (request.input.filetype === "video" && path.extname(file).replaceAll(".", "") === "m3u8" && request.output.filetype === "thumbnail") {
-			if (Deno.statSync(path.join(path.dirname(file), "thumbnail.png")).isFile) {
+			try {
+				Deno.statSync(path.join(path.dirname(file), "thumbnail.png"));
 				processedFiles++;
 				continue;
+			} catch {
+				null;
 			}
 
 			const ffmpegCommand = new Deno.Command("ffmpeg", {cwd: path.dirname(file), args: ["-i", path.basename(file), "-y", "-threads", String(window.navigator.hardwareConcurrency), "-vframes", "1", "-vf", "thumbnail=256", "thumbnail.png"]});
