@@ -9,7 +9,7 @@ this is a small project Fabik and I made just for fun, which allows you to easil
 | -------------------------------- | ----- | ------------------------------------------------------------- |
 | `uniconvert --help`              | `-h`  | Shows the help message                                        |
 | `uniconvert --filetypes`         | `-ft` | Shows a list of supported filetypes                           |
-| `uniconvert --upgrade`           | `-u`  | Upgrades UniConvert to the latest version                     |
+| `uniconvert --upgrade`           | `-u`  | Upgrades UniConvert to the latest version (still in progress) |
 | `uniconvert test.mp4 hls`        |       | Converts `test.mp4` to `test.m3u8`                            |
 | `uniconvert ./folder/:image png` |       | Converts all images in `folder` to `png`                      |
 | `uniconvert ./folder/:mov mp4`   |       | Converts all `.mov` files in `folder` to `mp4`                |
